@@ -1,6 +1,8 @@
 <template>
   <section id="login">
-    <div class="login-form">
+    <component :is="curCom"></component>
+    <!-- <SignIn></SignIn> -->
+    <!-- <div class="login-form">
       <a-form :form="form"
               class="login-form"
               @submit="submit">
@@ -11,7 +13,7 @@
           'account',
           { rules: [{ required: true, message: 'Please input your username!' }] },
         ]"
-                   placeholder="Username">
+                   placeholder="admin">
             <a-icon slot="prefix"
                     type="user"
                     style="color: rgba(0,0,0,.25)" />
@@ -23,7 +25,7 @@
           { rules: [{ required: true, message: 'Please input your Password!' }] },
         ]"
                    type="password"
-                   placeholder="Password">
+                   placeholder="welcome1">
             <a-icon slot="prefix"
                     type="lock"
                     style="color: rgba(0,0,0,.25)" />
@@ -54,29 +56,41 @@
           </a>
         </a-form-item>
       </a-form>
-    </div>
+    </div> -->
   </section>
 </template>
 
 <script>
+import SignIn from './components/SignIn.vue'
+import SignUp from './components/SignUp.vue'
+
 export default {
   name: 'Login',
+  components: { SignIn, SignUp },
   data () {
     return {
       form: this.$form.createForm(this),
+      curCom: null,
+      routes: [
+        'SignIn',
+        'SignUp',
+      ]
     }
   },
   created () {
+    this.getCom()
   },
   methods: {
-    submit (e) {
-      e.preventDefault();
-      this.form.validateFields((err, v) => {
-        if (!err) {
-          localStorage.setItem('token', JSON.stringify({ a: window.btoa(v.account), p: window.btoa(v.password) }))
-          this.$router.push({ name: 'home' })
-        }
-      })
+    getCom () {
+      const { type } = this.$route.params;
+      if (this.routes.includes(type)) {
+        this.curCom = type;
+      }
+    }
+  },
+  watch: {
+    '$route' () {
+      this.getCom()
     }
   }
 }
@@ -86,17 +100,5 @@ export default {
 #login {
   height: 100%;
   overflow: hidden;
-  .login-form {
-    width: 400px;
-    height: 300px;
-    margin: 0 auto;
-    margin-top: 10%;
-    .login-form-forgot {
-      float: right;
-    }
-    .login-form-button {
-      width: 100%;
-    }
-  }
 }
 </style>

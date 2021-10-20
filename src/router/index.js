@@ -11,7 +11,7 @@ const routes = [
     redirect: 'home'
   },
   {
-    path: '/login',
+    path: '/user/:type',
     name: 'login',
     component: Login
   },
@@ -40,9 +40,12 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
   if (!localStorage.getItem('token') && to.name !== 'login') {
-    next({ name: 'login' })
+    console.log({ 1: to })
+
+    next({ name: 'login', params: { type: 'SignIn' } })
   } else {
-    console.log({ to })
+    console.log({ 2: to })
+
     next()
   }
 })
